@@ -1,8 +1,11 @@
 from flask import Flask, request
 import requests
+import logging
 
 app = Flask(__name__)
 
+# Setup basic logging configuration
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 # Mapping of allowed service names to URLs for safe SSRF avoidance
 ALLOWED_URLS = {
     'github': 'https://api.github.com/events',
@@ -18,7 +21,8 @@ def follow_url():
             response = requests.get(target_url)
             return response.text
         except requests.RequestException as e:
-            return f"Error calling service: {e}", 502
+            logging.error(f"Error performing request to {target_url}: {e}", exc_info=True)
+            return "Failed to call the service.", 502
     else:
         return "Invalid or missing service parameter.", 400
 
