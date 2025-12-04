@@ -18,7 +18,7 @@ def follow_url():
     if service in ALLOWED_URLS:
         target_url = ALLOWED_URLS[service]
         try:
-            response = requests.get(target_url)
+            response = requests.get(target_url, timeout=10)
             return response.text
         except requests.RequestException as e:
             logging.error(f"Error performing request to {target_url}: {e}", exc_info=True)
